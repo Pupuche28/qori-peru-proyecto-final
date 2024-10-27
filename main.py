@@ -14,7 +14,6 @@ from routes.textiles_routes import textiles_bp
 from routes.detalleproducto_routes import detalle_producto_bp
 from routes.carrito_routes import carrito_bp  # Importar el blueprint del carrito
 from routes.tipoentrega_routes import tipo_entrega_bp
-from routes.tarjeta_routes import tarjeta_bp
 from routes.tipopago_routes import tipopago_bp
 from routes.mispedidos_routes import mispedidos_bp
 from routes.tarjetasAdmin_routes import tarjetaAdmin_bp
@@ -24,8 +23,6 @@ from routes.pedido_routes import pedido_bp
 from controllers.controlador_ceramica import obtener_productos_ceramica
 import controllers.controlador_tipoentrega as controlador_tipoentrega
 from controllers.controlador_detalleproducto import obtener_producto_por_id
-
-
 
 import controllers.controlador_resenas as controlador_resenas  
 import controllers.controlador_usuarios as controlador_usuarios  # Controlador para usuarios
@@ -70,7 +67,6 @@ app.register_blueprint(textiles_bp)
 app.register_blueprint(detalle_producto_bp)
 app.register_blueprint(carrito_bp, url_prefix='/carrito')
 app.register_blueprint(tipo_entrega_bp)
-app.register_blueprint(tarjeta_bp, url_prefix='/tarjetas')
 app.register_blueprint(tipopago_bp)
 app.register_blueprint(mispedidos_bp)
 app.register_blueprint(tarjetaAdmin_bp, url_prefix='/tarjetasAdmin')

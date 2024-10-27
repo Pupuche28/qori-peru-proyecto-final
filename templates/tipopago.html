@@ -62,32 +62,32 @@
                         </li>
                         <li class="nav-item me-2">
                             {% if current_user.is_authenticated %}
-                                <!-- Si el usuario está autenticado, redirigir a Mis Pedidos -->
-                                <a class="nav-link" href="{{ url_for('mispedidos_bp.mis_pedidos') }}">
-                                    <i class="fas fa-box" style="color: black;"></i>
-                                </a>
+                            <!-- Si el usuario está autenticado, redirigir a Mis Pedidos -->
+                            <a class="nav-link" href="{{ url_for('mispedidos_bp.mis_pedidos') }}">
+                                <i class="fas fa-box" style="color: black;"></i>
+                            </a>
                             {% else %}
-                                <!-- Si el usuario NO está autenticado, abrir el modal de login -->
-                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                    <i class="fas fa-box" style="color: black;"></i>
-                                </a>
+                            <!-- Si el usuario NO está autenticado, abrir el modal de login -->
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <i class="fas fa-box" style="color: black;"></i>
+                            </a>
                             {% endif %}
-                        </li>                           
+                        </li>
                         <ul class="navbar-nav">
                             <li class="nav-item me-2">
                                 {% if current_user.is_authenticated %}
-                                    <!-- Si el usuario está autenticado, redirigir al carrito -->
-                                    <a class="nav-link" href="{{ url_for('carrito') }}">
-                                        <i class="fas fa-shopping-cart" style="color: black;"></i>
-                                    </a>
+                                <!-- Si el usuario está autenticado, redirigir al carrito -->
+                                <a class="nav-link" href="{{ url_for('carrito') }}">
+                                    <i class="fas fa-shopping-cart" style="color: black;"></i>
+                                </a>
                                 {% else %}
-                                    <!-- Si el usuario NO está autenticado, abrir el modal de login -->
-                                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                        <i class="fas fa-shopping-cart" style="color: black;"></i>
-                                    </a>
+                                <!-- Si el usuario NO está autenticado, abrir el modal de login -->
+                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                    <i class="fas fa-shopping-cart" style="color: black;"></i>
+                                </a>
                                 {% endif %}
                             </li>
-                        </ul>   
+                        </ul>
                     </ul>
                     <ul class="navbar-nav me-5">
                         {% if current_user.is_authenticated %}
@@ -162,7 +162,8 @@
                             class="fa-solid fa-house"></i>&nbsp;&nbsp;Inicio</a></li>
                 <li class="breadcrumb-item"><a href="#" style="text-decoration: none; color: black;">Carro de
                         compras</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('tipoentrega') }}" style="text-decoration: none; color: black;">Tipo de entrega</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('tipoentrega') }}"
+                        style="text-decoration: none; color: black;">Tipo de entrega</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Tipo de pago</li>
             </ol>
         </nav>
@@ -206,6 +207,43 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Modal para agregar una nueva tarjeta -->
+            <div class="modal fade" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCardModalLabel">Agregar Tarjeta</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addCardForm" method="POST"
+                                action="{{ url_for('tipopago_bp.agregar_tarjeta_route') }}">
+                                <div class="mb-3">
+                                    <label for="nombre" class="form-label">Nombre en la Tarjeta</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="nro_tarjeta" class="form-label">Número de Tarjeta</label>
+                                    <input type="text" class="form-control" id="nro_tarjeta" name="nro_tarjeta" required
+                                        maxlength="16" minlength="16">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fecha" class="form-label">Fecha de Expiración (AAAA-MM-DD)</label>
+                                    <input type="date" class="form-control" id="fecha" name="fecha" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ccv" class="form-label">CCV</label>
+                                    <input type="text" class="form-control" id="ccv" name="ccv" required maxlength="3">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Agregar Tarjeta</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <!-- Resumen de la orden -->
             <div class="col-lg-4">
