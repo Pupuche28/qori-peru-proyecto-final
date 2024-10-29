@@ -6,7 +6,7 @@ import traceback  # Importar traceback para manejo de errores detallado
 # Crear el blueprint para usuario
 usuario_bp = Blueprint('usuario_bp', __name__)
 
-# Ruta para registrar un usuario
+# Rutas para la gestión de usuarios en vistas HTML
 @usuario_bp.route("/registrar", methods=["GET", "POST"])
 def registrar():
     if request.method == "POST":
@@ -37,93 +37,16 @@ def registrar():
 
     return render_template("registrate.html")
 
-
-# Ruta para insertar usuario desde JSON (usada en Postman)
-@usuario_bp.route("/insertarusuario", methods=["POST"])
-def insertar_usuario_desde_json():
-    try:
-        nombres = request.json["nombres"]
-        apellidos = request.json["apellidos"]
-        email = request.json["email"]
-        telefono = request.json["telefono"]
-        nroDocIde = request.json["nroDocIde"]
-        contrasena = request.json["contrasena"]
-        direccion = request.json["direccion"]
-        controlador_usuarios.insertar_usuario(nombres, apellidos, email, telefono, nroDocIde, contrasena, direccion, 2)
-        return jsonify({"data": [], "message": "Usuario registrado correctamente", "status": 1})
-    except Exception as e:
-        return jsonify({"data": [], "message": str(repr(e)), "status": -1})
-
-
-# Ruta para actualizar usuario
-@usuario_bp.route("/actualizarusuario", methods=["POST"])
-def actualizar_usuario_ruta():
-    try:
-        idUsuario = request.form["idUsuario"]
-        nombres = request.form["nombres"]
-        apellidos = request.form["apellidos"]
-        email = request.form["email"]
-        telefono = request.form["telefono"]
-        nroDocIde = request.form["nroDocIde"]
-        contrasena = request.form["contrasena"]
-        direccion = request.form["direccion"]
-        controlador_usuarios.actualizar_usuario(nombres, apellidos, email, telefono, nroDocIde, contrasena, direccion, idUsuario)
-        return jsonify({"message": "Usuario actualizado correctamente", "status": 1})
-    except Exception as e:
-        return jsonify({"message": str(repr(e)), "status": -1})
-
-
-# Ruta para eliminar un usuario desde el administrador
-@usuario_bp.route("/eliminar_administrador/<int:idUsuario>", methods=["POST"])
-def eliminar_administrador(idUsuario):
-    try:
-        controlador_usuarios.eliminar_usuario(idUsuario)
-        flash("Usuario eliminado correctamente", "success")
-        return redirect(url_for('usuario_bp.menu_man_usuario'))
-    except Exception as e:
-        flash(f"Error al eliminar usuario: {str(e)}", "error")
-        return redirect(url_for('usuario_bp.menu_man_usuario'))
-
-
-
-# Ruta para listar usuarios en formato JSON
-@usuario_bp.route("/listarusuarios", methods=["GET"])
-def listar_usuarios():
-    try:
-        usuarios = controlador_usuarios.obtener_usuarios()
-        return jsonify({"data": usuarios, "message": "Usuarios obtenidos correctamente", "status": 1})
-    except Exception as e:
-        return jsonify({"data": [], "message": str(repr(e)), "status": -1})
-
-
-# Ruta para listar un usuario por ID en formato JSON
-@usuario_bp.route("/listarusuarios/<int:idUsuario>", methods=["GET"])
-def listar_usuario_por_id(idUsuario):
-    try:
-        usuario = controlador_usuarios.obtener_usuario_por_id(idUsuario)
-        if usuario:
-            return jsonify({"data": usuario, "message": "Usuario obtenido correctamente", "status": 1})
-        else:
-            return jsonify({"data": [], "message": "Usuario no encontrado", "status": 0})
-    except Exception as e:
-        return jsonify({"data": [], "message": str(repr(e)), "status": -1})
-
-
-# Ruta para gestionar los usuarios y mostrar la página del administrador
 @usuario_bp.route("/menu_administrador", methods=["GET"])
 def menu_administrador():
     usuarios = controlador_usuarios.obtener_todos_los_usuarios()
     return render_template("menuAdministrador.html", usuarios=usuarios)
 
-
-# Ruta para gestionar los usuarios en menuManUsuario.html
 @usuario_bp.route("/menu_man_usuario", methods=["GET"])
 def menu_man_usuario():
     usuarios = controlador_usuarios.obtener_todos_los_usuarios()
     return render_template("menuManUsuario.html", usuarios=usuarios)
 
-
-# Ruta para agregar un usuario desde la parte del administrador
 @usuario_bp.route("/agregar_usuario_administrador", methods=["POST"])
 def agregar_usuario_administrador():
     try:
@@ -143,8 +66,6 @@ def agregar_usuario_administrador():
         flash(f"Error al agregar usuario: {str(e)}", "error")
         return redirect(url_for('usuario_bp.menu_man_usuario'))
 
-
-# Ruta para modificar un usuario desde la parte del administrador
 @usuario_bp.route("/actualizar_usuario_administrador", methods=["POST"])
 def actualizar_usuario_administrador():
     try:
@@ -164,8 +85,82 @@ def actualizar_usuario_administrador():
         flash(f"Error al actualizar usuario: {str(e)}", "error")
         return redirect(url_for('usuario_bp.menu_man_usuario'))
 
+@usuario_bp.route("/eliminar_administrador/<int:idUsuario>", methods=["POST"])
+def eliminar_administrador(idUsuario):
+    try:
+        controlador_usuarios.eliminar_usuario(idUsuario)
+        flash("Usuario eliminado correctamente", "success")
+        return redirect(url_for('usuario_bp.menu_man_usuario'))
+    except Exception as e:
+        flash(f"Error al eliminar usuario: {str(e)}", "error")
+        return redirect(url_for('usuario_bp.menu_man_usuario'))
 
-# Ruta para verificar si un usuario tiene reseñas activas
+
+# Rutas de API para la gestión de usuarios
+# API para registrar usuario desde JSON
+@usuario_bp.route("/insertarusuario", methods=["POST"])
+def insertar_usuario_desde_json():
+    try:
+        nombres = request.json["nombres"]
+        apellidos = request.json["apellidos"]
+        email = request.json["email"]
+        telefono = request.json["telefono"]
+        nroDocIde = request.json["nroDocIde"]
+        contrasena = request.json["contrasena"]
+        direccion = request.json["direccion"]
+        controlador_usuarios.insertar_usuario(nombres, apellidos, email, telefono, nroDocIde, contrasena, direccion, 2)
+        return jsonify({"data": [], "message": "Usuario registrado correctamente", "status": 1})
+    except Exception as e:
+        return jsonify({"data": [], "message": str(repr(e)), "status": -1})
+
+# API para actualizar usuario
+@usuario_bp.route("/actualizarusuario", methods=["POST"])
+def actualizar_usuario_ruta():
+    try:
+        idUsuario = request.form["idUsuario"]
+        nombres = request.form["nombres"]
+        apellidos = request.form["apellidos"]
+        email = request.form["email"]
+        telefono = request.form["telefono"]
+        nroDocIde = request.form["nroDocIde"]
+        contrasena = request.form["contrasena"]
+        direccion = request.form["direccion"]
+        controlador_usuarios.actualizar_usuario(nombres, apellidos, email, telefono, nroDocIde, contrasena, direccion, idUsuario)
+        return jsonify({"message": "Usuario actualizado correctamente", "status": 1})
+    except Exception as e:
+        return jsonify({"message": str(repr(e)), "status": -1})
+
+# API para eliminar usuario por ID
+@usuario_bp.route("/eliminar_administrador/<int:idUsuario>", methods=["POST"])
+def eliminar_administrador_api(idUsuario):
+    try:
+        controlador_usuarios.eliminar_usuario(idUsuario)
+        return jsonify({"message": "Usuario eliminado correctamente", "status": 1})
+    except Exception as e:
+        return jsonify({"message": str(e), "status": -1})
+
+# API para listar todos los usuarios
+@usuario_bp.route("/listarusuarios", methods=["GET"])
+def listar_usuarios():
+    try:
+        usuarios = controlador_usuarios.obtener_usuarios()
+        return jsonify({"data": usuarios, "message": "Usuarios obtenidos correctamente", "status": 1})
+    except Exception as e:
+        return jsonify({"data": [], "message": str(repr(e)), "status": -1})
+
+# API para listar un usuario por ID
+@usuario_bp.route("/listarusuarios/<int:idUsuario>", methods=["GET"])
+def listar_usuario_por_id(idUsuario):
+    try:
+        usuario = controlador_usuarios.obtener_usuario_por_id(idUsuario)
+        if usuario:
+            return jsonify({"data": usuario, "message": "Usuario obtenido correctamente", "status": 1})
+        else:
+            return jsonify({"data": [], "message": "Usuario no encontrado", "status": 0})
+    except Exception as e:
+        return jsonify({"data": [], "message": str(repr(e)), "status": -1})
+
+# API para verificar si un usuario tiene reseñas activas
 @usuario_bp.route('/verificar_resenas/<int:id_usuario>', methods=['GET'])
 def verificar_resenas(id_usuario):
     try:
